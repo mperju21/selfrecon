@@ -1,0 +1,31 @@
+# secrets and local configuration
+.env
+.env.*
+
+# runtime data, databases and exports (real data never lives in the repo)
+*.db
+*.db-journal
+*.sqlite
+*.sqlite3
+data/
+exports/
+evidence/
+*.export.*
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+build/
+dist/
+*.egg-info/
+.mypy_cache/
+.ruff_cache/
+.pytest_cache/
+.coverage
+htmlcov/
+
+# OS / editors
+.DS_Store
+.idea/
+.vscode/

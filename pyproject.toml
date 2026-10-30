@@ -1,0 +1,55 @@
+[project]
+name = "selfrecon"
+version = "0.0.1"
+description = "Local, privacy-first audit of your own digital footprint"
+readme = "README.md"
+requires-python = ">=3.12,<3.13"
+dependencies = [
+    "phonenumbers>=8.13",
+]
+
+[dependency-groups]
+dev = [
+    "mypy>=1.11",
+    "pre-commit>=3.8",
+    "pytest>=8.3",
+    "pytest-asyncio>=0.24",
+    "pytest-socket>=0.7",
+    "ruff>=0.6",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/selfrecon"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "UP", "B", "SIM", "RUF", "S", "PTH"]
+ignore = ["S101"]  # asserts are fine in tests and type narrowing
+
+[tool.ruff.lint.per-file-ignores]
+"tools/*" = ["S603", "S607"]  # tools call git with fixed arguments
+"tests/**" = ["S311", "S603", "S607"]  # seeded random for fake data; git with fixed arguments
+
+[tool.mypy]
+files = ["src", "plugins"]
+mypy_path = "src:."
+explicit_package_bases = true
+strict = true
+
+[tool.pytest.ini_options]
+addopts = "-m 'not leak' --import-mode=importlib --strict-markers --disable-socket --allow-unix-socket"
+# leak suite: uv run pytest tests/leak -m leak --force-enable-socket -q
+asyncio_mode = "auto"
+asyncio_default_fixture_loop_scope = "function"
+testpaths = ["tests", "plugins"]
+pythonpath = ["."]
+markers = [
+    "leak: needs Docker up and contacts public test endpoints (opt-in)",
+]

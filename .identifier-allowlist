@@ -1,0 +1,4 @@
+# Exact values the identifier check accepts. One per line, each with a '# reason'.
+# Only public organisation contacts (e.g. a data-protection authority) and the
+# project's GitHub noreply commit address belong here, never a private person's data.
+noreply@anthropic.com  # co-author trailer added to commit messages by Claude Code

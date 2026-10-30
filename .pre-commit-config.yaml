@@ -1,0 +1,42 @@
+# Install once: uv run pre-commit install
+default_install_hook_types: [pre-commit, commit-msg]
+default_stages: [pre-commit]
+repos:
+  - repo: local
+    hooks:
+      - id: ruff-check
+        name: ruff check
+        entry: uv run ruff check --force-exclude
+        language: system
+        types_or: [python, pyi]
+      - id: ruff-format
+        name: ruff format
+        entry: uv run ruff format --force-exclude
+        language: system
+        types_or: [python, pyi]
+      - id: mypy
+        name: mypy
+        entry: uv run mypy src plugins
+        language: system
+        types_or: [python, pyi]
+        pass_filenames: false
+      - id: identifiers
+        name: no real identifiers in files
+        entry: uv run python tools/check_identifiers.py --skip-private
+        language: system
+        types: [text]
+      - id: private-paths
+        name: no private files staged
+        entry: uv run python tools/check_identifiers.py --private-only
+        language: system
+        pass_filenames: false
+        always_run: true
+      - id: identifiers-commit-msg
+        name: no real identifiers in the commit message
+        entry: uv run python tools/check_identifiers.py --commit-msg
+        language: system
+        stages: [commit-msg]
+  - repo: https://github.com/gitleaks/gitleaks
+    rev: 2ca41cc1372d1e939a6a879f18cdc19fc1cac1ce  # frozen: v8.30.0
+    hooks:
+      - id: gitleaks
